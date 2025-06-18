@@ -1,0 +1,42 @@
+description: "TDS Virtual TA Project Sample (but not the actual evaluation) Questions"
+
+providers:
+  - id: https
+    config:
+      url: https://tds-virtual-ta-93tx.onrender.com/api/ # Replace with your deployed API endpoint
+      method: POST
+      headers:
+        Content-Type: application/json
+      body: |
+        {
+          "question": "{{ question }}"{% if image %},
+          "image": "{{ image }}"{% endif %}
+        }
+      transformResponse: json
+
+defaultTest:
+  assert:
+    - type: is-json
+      value:
+        type: object
+        required: [answer, links]
+        properties:
+          answer: { type: string }
+          links:
+            type: array
+            items:
+              type: object
+              required: [url, text]
+              properties:
+                url: { type: string }
+                text: { type: string }
+
+tests:
+  - vars:
+      question: The question asks to use gpt-3.5-turbo-0125 model but the ai-proxy provided by Anand sir only supports gpt-4o-mini. So should we just use gpt-4o-mini or use the OpenAI API for gpt3.5 turbo?
+  - vars:
+      question: If a student scores 10/10 on GA4 as well as a bonus, how would it appear on the dashboard?
+  - vars:
+      question: I know Docker but have not used Podman before. Should I use Docker for this course?
+  - vars:
+      question: When is the TDS Sep 2025 end-term exam?
